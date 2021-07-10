@@ -8,6 +8,11 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+#if !DEBUG
+        readonly ulong MaxValue = 0xFCFCFCFCFCFC0000ul;
+#else
+        readonly ulong MaxValue = ulong.MaxValue;
+#endif
         private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
         {
             if (val.CompareTo(min) < 0) return min;
@@ -57,6 +62,15 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
 
+#if DEBUG
+            infoPanel.Location = new Point(0, 391);
+            Size = new Size(686, 588);
+#else
+            infoPanel.Location = new Point(0, 315);
+            Size = new Size(686, 498);
+#endif
+            
+
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -68,6 +82,12 @@ namespace WindowsFormsApp1
                 _boxes.Add(boxList);
                 for (int j = 0; j < 8; ++j)
                 {
+#if !DEBUG
+                    if (j >= 6 || i >= 6)
+                    {
+                        continue;
+                    }
+#endif
                     int j0 = 1 << 7 - j;
                     int i0 = (7 - i) * 8;
 
@@ -85,6 +105,8 @@ namespace WindowsFormsApp1
                     ((ISupportInitialize)pictureBox).EndInit();
 
                     Box box = new Box(pictureBox, num);
+                    boxList.Add(box);
+
                     pictureBox.Click += delegate
                     {
                         if (!box.IsActive)
@@ -98,7 +120,6 @@ namespace WindowsFormsApp1
 
                         decimalText.Text = Current.ToString();
                     };
-                    boxList.Add(box);
                 }
             }
         }
@@ -145,15 +166,15 @@ namespace WindowsFormsApp1
         {
             if (!ulong.TryParse(decimalText.Text, out var value))
             {
-                value = string.IsNullOrEmpty(decimalText.Text) ? 0 : ulong.MaxValue;
+                value = string.IsNullOrEmpty(decimalText.Text) ? 0 : MaxValue;
             }
             else
             {
-                value = Clamp(value, ulong.MinValue, ulong.MaxValue);
+                value = Clamp(value, ulong.MinValue, MaxValue);
             }
-
             decimalText.Text = value.ToString();
             Current = value;
+
         }
 
         private void numberCopyBtn_Click(object sender, EventArgs e)
