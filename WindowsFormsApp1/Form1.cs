@@ -85,5 +85,30 @@ namespace WindowsFormsApp1
         {
             Application.Exit();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Bitmap bt = new Bitmap(310, 273);
+            Graphics g = Graphics.FromImage(bt);
+
+            var a = this.Location;
+            g.CopyFromScreen(this.Location.X + 15, this.Location.Y + 54
+                , 0, 0, new Size(bt.Width, bt.Height));
+
+            Clipboard.SetImage(bt);
+
+            float rr = 1.0f;
+            if (int.TryParse(NumText.Text, out int r))
+            {
+                rr = r * 0.01f;
+            }
+
+            Bitmap newImage = new Bitmap((int)(310 * rr * 0.25f), (int)(273 * rr * 0.25f));
+            g = Graphics.FromImage(newImage);
+            g.FillRectangle(Brushes.Black, 0, 0, newImage.Width, newImage.Height);
+            g.DrawImage(bt, 0, 0, (int)(310 * rr * 0.25f), (int)(273 * rr * 0.25f));
+
+            Clipboard.SetImage(newImage);
+        }
     }
 }
