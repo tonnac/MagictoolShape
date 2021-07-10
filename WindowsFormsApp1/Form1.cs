@@ -103,8 +103,13 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void imageCopyBtn_Click(object sender, EventArgs e)
         {
+            if (Current <= 0)
+            {
+                return;
+            }
+
             Bitmap bt = new Bitmap(310, 273);
             Graphics g = Graphics.FromImage(bt);
 
@@ -114,7 +119,7 @@ namespace WindowsFormsApp1
             Clipboard.SetImage(bt);
 
             float rr = 1.0f;
-            if (int.TryParse(NumText.Text, out int r))
+            if (int.TryParse(imageRatioText.Text, out int r))
             {
                 rr = r * 0.01f;
             }
@@ -125,6 +130,7 @@ namespace WindowsFormsApp1
             g.DrawImage(bt, 0, 0, (int)(310 * rr * 0.25f), (int)(273 * rr * 0.25f));
 
             Clipboard.SetImage(newImage);
+            toolStripStatusLabel1.Text = $"클립보드에 {Current}이미지가 복사 됐습니다.";
         }
 
         private void decimalText_KeyPress(object sender, KeyPressEventArgs e)
@@ -148,6 +154,16 @@ namespace WindowsFormsApp1
 
             decimalText.Text = value.ToString();
             Current = value;
+        }
+
+        private void numberCopyBtn_Click(object sender, EventArgs e)
+        {
+            if (Current <= 0)
+            {
+                return;
+            }
+            Clipboard.SetText(Current.ToString());
+            toolStripStatusLabel1.Text = $"클립보드에 {Current}번호가 복사 됐습니다.";
         }
     }
 }
