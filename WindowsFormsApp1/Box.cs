@@ -10,24 +10,26 @@ namespace WindowsFormsApp1
 {
     class Box
     {
-        public Box(PictureBox pictureBox)
+        public Box(PictureBox pictureBox, ulong value)
         {
-            this.pictureBox = pictureBox;
-            IsActive = false;
+            Value = value;
+            _pictureBox = pictureBox;
+            _pictureBox.BackColor = Color.White;
         }
 
 
-        private PictureBox pictureBox;
-        private bool isActive = false;
+        public ulong Value { get; }
+        private readonly PictureBox _pictureBox;
+        private bool _isActive = false;
 
-        public PictureBox PictureBox => pictureBox;
+        public PictureBox PictureBox => _pictureBox;
         public bool IsActive
         {
-            get => isActive;
+            get => _isActive;
             set
             {
-                isActive = value;
-                pictureBox.BackColor = isActive ? Color.Black : Color.White;
+                _isActive = value;
+                _pictureBox.BackColor = _isActive ? Color.Black : Color.White;
             }
         }
     }
