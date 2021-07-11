@@ -2,7 +2,7 @@
 using Nevron.Nov.Graphics;
 using Nevron.Nov.UI;
 
-namespace WindowsFormsApp1
+namespace MagictoolShape
 {
     public class Item
     {

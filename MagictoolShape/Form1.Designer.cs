@@ -1,7 +1,7 @@
 ﻿
 using System.Windows.Forms;
 
-namespace WindowsFormsApp1
+namespace MagictoolShape
 {
     using System.Collections.Generic;
     partial class Form1

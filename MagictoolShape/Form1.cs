@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Nevron.Nov.Graphics;
 using Nevron.Nov.UI;
 
-namespace WindowsFormsApp1
+namespace MagictoolShape
 {
     public partial class Form1 : Form
     {

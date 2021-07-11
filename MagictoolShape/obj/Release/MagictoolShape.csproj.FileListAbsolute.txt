@@ -1,0 +1,15 @@
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.csproj.AssemblyReference.cache
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.csproj.GenerateResource.cache
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.csproj.CoreCompileInputs.cache
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\bin\Release\MagictoolShape.exe.config
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\bin\Release\MagictoolShape.exe
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\bin\Release\MagictoolShape.pdb
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.Form1.resources
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.Properties.Resources.resources
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.exe
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.pdb
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\bin\Release\MagictoolShape.exe.manifest
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\bin\Release\MagictoolShape.application
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.TrustInfo.xml
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.exe.manifest
+C:\Users\C\source\repos\ShapeForm\MagictoolShape\obj\Release\MagictoolShape.application

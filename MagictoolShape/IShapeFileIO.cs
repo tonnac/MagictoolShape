@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms.VisualStyles;
 
-namespace WindowsFormsApp1
+namespace MagictoolShape
 {
     // ReSharper disable once InconsistentNaming
     internal class ItemShapeFileIO
