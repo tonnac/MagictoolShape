@@ -43,69 +43,50 @@ namespace WindowsFormsApp1
         {
             CopyValue();
         }
-
-        private void testMakePanelBtn_Click(object sender, EventArgs e)
+        
+        
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Bitmap bitmap = GetCurrentShape();
-
-
-            if (bitmap == null)
-            {
-                return;
-            }
-
-            ImageConverter converter = new ImageConverter();
-            var abcde = (byte[]) converter.ConvertTo(bitmap, typeof(byte[]));
-
-            NImageSource mImageSource = new NBytesImageSource(abcde);
-            NImage image = new NImage(mImageSource);
-            var Item = new NListBoxItem(image);
-            NBorder border = new NBorder();
-            border.InnerStroke = new NStroke(1.5, NColor.Black);
-            Item.MouseDown += ItemOnMouseDown;
-            Item.Border = border;
-            itemListBox.Items.Add(Item);
+            Application.Exit();
         }
 
-        private void ItemOnMouseDown(NMouseButtonEventArgs args)
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (args.Button == ENMouseButtons.Right)
+            DialogResult dr = openFileDialog1.ShowDialog();
+
+            if (dr == DialogResult.OK)
             {
-                // Mark the event as handled
-                args.Cancel = true;
-
-                // Create the menu to show as context menu
-                NMenu menu = new NMenu();
-                var copyValue = new NMenuItem("값 복사");
-                copyValue.Click += Copy_Click;
-                var copyImage = new NMenuItem("이미지 복사");
-                copyImage.Click += CopyImageOnClick;
-
-                menu.Items.Add(copyValue);
-                menu.Items.Add(copyImage);
-                menu.Items.Add(new NMenuSeparator());
-                menu.Items.Add(new NCheckableMenuItem(null, "4) Checkable Item", true));
-
-                // Open the menu as context menu
-                NPopupWindow.OpenInContext(new NPopupWindow(menu), args.CurrentTargetNode, args.ScreenPosition);
+                LoadFile(openFileDialog1.FileName);
             }
         }
 
-        private void CopyImageOnClick(NEventArgs arg)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CopyImage();
+            ItemShapeFileIO itemShapeFileIo = new ItemShapeFileIO(_fileName);
+            itemShapeFileIo.SaveFile(_items, _imageSizeRatio);
+            _isSave = false;
         }
 
-        private void Copy_Click(Nevron.Nov.Dom.NEventArgs arg)
+        private void createBtn_Click(object sender, EventArgs e)
         {
-            CopyValue();
+            DeSelectItem();
         }
 
-        private void addButton_Click(NEventArgs arg)
+        private void addBtn_Click(object sender, EventArgs e)
         {
             if (_current == 0)
             {
+                MessageBox.Show(@"저장 할 수 없는 값", @"오류");
                 return;
+            }
+            
+            foreach (var item in _items)
+            {
+                if (item.Value == _current)
+                {
+                    MessageBox.Show(@"현재 저장이 되어있는 값입니다.", @"오류");
+                    return;
+                }
             }
 
             Bitmap bitmap = GetCurrentShape();
@@ -115,12 +96,44 @@ namespace WindowsFormsApp1
             }
             NListBoxItem newItem = MakeBoxItem(bitmap);
             AddNewItem(newItem, _current);
+            DeSelectItem();
+            _isSave = true;
         }
-        
-        private void saveBtn_Click(object sender, EventArgs e)
+
+        private void modifyBtn_Click(object sender, EventArgs e)
         {
-            ItemShapeFileIO itemShapeFileIo = new ItemShapeFileIO(_fileName);
-            itemShapeFileIo.SaveFile(_items);
+            _selectedItem?.Modify(_current, GetCurrentShape());
+            DeSelectItem();
+            _isSave = true;
+        }
+
+        private void deleteBtn_Click(object sender, EventArgs e)
+        {
+            DeleteItem(SelectedItem.Value);
+        }
+
+        private void imageRatioText_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                _isSave = true;
+            }
+        }
+
+        private void imageRatioText_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(imageRatioText.Text, out int ratio))
+            {
+                _imageSizeRatio = ratio;
+            }
+            else
+            {
+                imageRatioText.Text = _imageSizeRatio.ToString();
+            }
         }
     }
 }

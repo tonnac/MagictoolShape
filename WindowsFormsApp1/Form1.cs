@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Nevron.Nov.Graphics;
 using Nevron.Nov.UI;
@@ -15,9 +16,32 @@ namespace WindowsFormsApp1
 #else
         readonly ulong MaxValue = ulong.MaxValue;
 #endif
+        private bool _isSave = false;
+        private int _imageSizeRatio = 100;
         private readonly string _fileName = "save";
         private readonly List<Item> _items = new List<Item>();
         private readonly List<List<Box>> _boxes = new List<List<Box>>();
+        private Item _selectedItem;
+
+        private Item SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                itemListBox.Selection.Deselect(itemListBox.Selection.SelectedItems);
+                _selectedItem = value;
+                deleteBtn.Enabled = _selectedItem != null;
+                addBtn.Enabled = false;
+                modifyBtn.Enabled = false;
+
+                if (_selectedItem == null)
+                {
+                }
+                else
+                {
+                }
+            }
+        }
         private ulong _current;
 
         private ulong Current
@@ -42,6 +66,8 @@ namespace WindowsFormsApp1
                         mmm = i != 0 ? mmm.Insert(0, ab + " ") : mmm.Insert(0, ab);
 
                     }
+
+                    decimalText.Text = _current.ToString();
                     textBox2.Text = _current.ToString("X");
                     textBox3.Text = mmm;
                 }
@@ -64,16 +90,40 @@ namespace WindowsFormsApp1
             DisableResize();
             CreateCells();
             LoadFile();
+            modifyBtn.Enabled = false;
+            deleteBtn.Enabled = false;
+            FormClosing += (sender, args) =>
+            {
+                if (_isSave)
+                {
+                    var result = MessageBox.Show(@"변경 내용을 저장하겠습니까?", @"MagicTool Shape", MessageBoxButtons.YesNoCancel);
+
+                    switch (result)
+                    {
+                        case DialogResult.Cancel:
+                            args.Cancel = true;
+                            break;
+                        case DialogResult.Yes:
+                            ItemShapeFileIO itemShapeFileIo = new ItemShapeFileIO(_fileName);
+                            itemShapeFileIo.SaveFile(_items, _imageSizeRatio);
+                            _isSave = false;
+                            break;
+                    }
+                }
+            };
         }
 
+        // ReSharper disable once IdentifierTypo
         private void LoadFile_Imple(ItemShapeFileIO itemShapeFileIo)
         {
             itemListBox.Items.Clear();
             _items.Clear();
             Current = 0;
-            List<ItemShapeFileIO.LoadedObject> loadedObjects = itemShapeFileIo.LoadFile();
+            var loadedObjects = itemShapeFileIo.LoadFile();
             if (loadedObjects == null) return;
-            foreach (var loadedObject in loadedObjects)
+            _imageSizeRatio = loadedObjects.Item2;
+            imageRatioText.Text = _imageSizeRatio.ToString();
+            foreach (var loadedObject in loadedObjects.Item1)
             {
                 AddNewItem(loadedObject.ImageBytes, loadedObject.Value);
             }
@@ -91,13 +141,10 @@ namespace WindowsFormsApp1
 
         private NListBoxItem MakeBoxItem(byte[] imageBytes)
         {
-            NListBoxItem item;
             NImageSource mImageSource = new NBytesImageSource(imageBytes);
-            NImage image = new NImage(mImageSource);
-            item = new NListBoxItem(image);
-            NBorder border = new NBorder();
-            border.InnerStroke = new NStroke(1.5, NColor.Black);
-            item.MouseDown += ItemOnMouseDown;
+            var image = new NImage(mImageSource);
+            var item = new NListBoxItem(image);
+            var border = new NBorder {InnerStroke = new NStroke(1.5, NColor.Black)};
             item.Border = border;
 
             return item;
@@ -112,7 +159,6 @@ namespace WindowsFormsApp1
             NImage image = new NImage(mImageSource);
             var item = new NListBoxItem(image);
             NBorder border = new NBorder {InnerStroke = new NStroke(1.5, NColor.Black)};
-            item.MouseDown += ItemOnMouseDown;
             item.Border = border;
 
             return item;
@@ -136,6 +182,49 @@ namespace WindowsFormsApp1
                     if (g.Image.ImageSource is NBytesImageSource h)
                     {
                         newItem = new Item(value, boxItem, h.Bytes);
+                        boxItem.MouseDown += delegate(NMouseButtonEventArgs args)
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            var _item = newItem;
+                            if (args.Button == ENMouseButtons.Right)
+                            {
+                                itemListBox.Selection.SingleSelect(boxItem);
+                                // Mark the event as handled
+                                args.Cancel = true;
+
+                                // Create the menu to show as context menu
+                                NMenu menu = new NMenu();
+                                var copyValue = new NMenuItem("값 복사");
+                                copyValue.Click += eventArgs =>
+                                {
+                                    CopyValue(_item.Value);   
+                                };
+                                var copyImage = new NMenuItem("이미지 복사");
+                                copyImage.Click += eventArgs =>
+                                {
+                                    CopyImage(_item.Value);
+                                };
+                                var deleteMenu = new NMenuItem("삭제");
+                                deleteMenu.Click += eventArgs =>
+                                {
+                                    DeleteItem(_item.Value);
+                                };
+
+                                menu.Items.Add(copyValue);
+                                menu.Items.Add(copyImage);
+                                menu.Items.Add(new NMenuSeparator());
+                                menu.Items.Add(deleteMenu);
+
+                                // Open the menu as context menu
+                                NPopupWindow.OpenInContext(new NPopupWindow(menu), args.CurrentTargetNode, args.ScreenPosition);
+                            }
+                            else if (args.ButtonEvent == ENMouseButtonEvent.LeftButtonDoubleClick)
+                            {
+                                SelectedItem = _item;
+                                Current = _item.Value;
+                            }
+                
+                        };
                     }
                 }
             }
@@ -147,23 +236,45 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void CopyValue()
+        private void CopyValue(ulong value = 0)
         {
-            if (Current <= 0)
+            if (Current <= 0 && value == 0)
             {
                 return;
             }
-            Clipboard.SetText(Current.ToString());
-            toolStripStatusLabel1.Text = $@"클립보드에 {Current} 값이 복사 됐습니다.";
+
+            ulong copyValue = value > 0 ? value : Current;
+            Clipboard.SetText(copyValue.ToString());
+            toolStripStatusLabel1.Text = $@"클립보드에 {copyValue} 값이 복사 됐습니다.";
         }
 
-        private void CopyImage()
+        private void CopyImage(ulong value = 0)
         {
-            Bitmap img = GetCurrentShape(int.TryParse(imageRatioText.Text, out int r) ? r * 0.01f : 1.0f);
+            Bitmap img = null;
+            if (value == 0)
+            {
+                img = GetCurrentShape(int.TryParse(imageRatioText.Text, out int r) ? r * 0.01f : 1.0f);
+            }
+            else
+            {
+                foreach (var item in _items)
+                {
+                    if (item.Value == value)
+                    {
+                        using (var ms = new MemoryStream(item.BitmapBytes))
+                        {
+                            img = new Bitmap(ms);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            ulong copyValue = value > 0 ? value : Current;
             if (img != null)
             {
                 Clipboard.SetImage(img);
-                toolStripStatusLabel1.Text = $@"클립보드에 {Current} 이미지가 복사 됐습니다.";
+                toolStripStatusLabel1.Text = $@"클립보드에 {copyValue} 이미지가 복사 됐습니다.";
             }
         }
 
@@ -179,8 +290,13 @@ namespace WindowsFormsApp1
             decimalText.ReadOnly = false;
             infoPanel.Location = new Point(0, 391);
             Size = new Size(686, 588);
-            //itemPanel.Size = new Size(202, 372);
+            itemListBox.Size = new Size(115, 355);
+            itemListBox.Location = new Point(542, 30);
+            btnPanel.Location = new Point(437, 30);
 #else
+            btnPanel.Location = new Point(387, 30);
+            itemListBox.Location = new Point(502, 30);
+            itemListBox.Size = new Size(155, 280);
             infoPanel.Location = new Point(0, 315);
             Size = new Size(686, 498);
 #endif
@@ -238,6 +354,12 @@ namespace WindowsFormsApp1
                             Current &= ~box.Value;
                         }
 
+                        bool isExistSameValue = _items.FindAll(item => item.Value == Current).Count > 0;
+                        if (SelectedItem != null)
+                        {
+                            modifyBtn.Enabled = !isExistSameValue;
+                        }
+                        addBtn.Enabled = !isExistSameValue;
                         decimalText.Text = Current.ToString();
                     };
                 }
@@ -267,19 +389,31 @@ namespace WindowsFormsApp1
             return newImage;
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private bool DeleteItem(ulong value)
         {
-            Application.Exit();
+            foreach (var item in _items)
+            {
+                if (item.Value == value)
+                {
+                    _items.Remove(item);
+                    itemListBox.Items.Remove(item.ListBoxItem);
+                    DeSelectItem();
+                    _isSave = true;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        private void DeSelectItem()
         {
-            DialogResult dr = openFileDialog1.ShowDialog();
-
-            if (dr == DialogResult.OK)
+            if (itemListBox.Selection.SelectedItems.Count > 0)
             {
-                LoadFile(openFileDialog1.FileName);
+                itemListBox.Selection.Deselect(itemListBox.Selection.FirstSelected);
             }
+            SelectedItem = null;
+            Current = 0;
         }
     }
 }

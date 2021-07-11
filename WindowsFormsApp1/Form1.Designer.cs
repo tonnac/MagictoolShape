@@ -32,7 +32,6 @@ namespace WindowsFormsApp1
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textureCopyBtn = new System.Windows.Forms.Button();
@@ -46,10 +45,7 @@ namespace WindowsFormsApp1
             this.imageRatioLabel = new System.Windows.Forms.Label();
             this.imageRatioText = new System.Windows.Forms.TextBox();
             this.infoPanel = new System.Windows.Forms.Panel();
-            this.saveBtn = new System.Windows.Forms.Button();
-            this.testMakePanelBtn = new System.Windows.Forms.Button();
             this.itemListBox = new Nevron.Nov.WinFormControls.NListBoxControl();
-            this.addButton = new Nevron.Nov.WinFormControls.NButtonControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,14 +53,21 @@ namespace WindowsFormsApp1
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.createBtn = new System.Windows.Forms.Button();
+            this.addBtn = new System.Windows.Forms.Button();
+            this.modifyBtn = new System.Windows.Forms.Button();
+            this.deleteBtn = new System.Windows.Forms.Button();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.btnPanel = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.infoPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.btnPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox2
             // 
-            this.textBox2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.textBox2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox2.Location = new System.Drawing.Point(213, 30);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
@@ -75,7 +78,7 @@ namespace WindowsFormsApp1
             // textBox3
             // 
             this.textBox3.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox3.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.textBox3.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.Location = new System.Drawing.Point(14, 89);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
@@ -95,7 +98,7 @@ namespace WindowsFormsApp1
             // 
             // decimalText
             // 
-            this.decimalText.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.decimalText.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.decimalText.Location = new System.Drawing.Point(14, 30);
             this.decimalText.Name = "decimalText";
             this.decimalText.ReadOnly = true;
@@ -107,7 +110,7 @@ namespace WindowsFormsApp1
             // 
             // binarylabel
             // 
-            this.binarylabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.binarylabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.binarylabel.Location = new System.Drawing.Point(14, 63);
             this.binarylabel.Name = "binarylabel";
             this.binarylabel.Size = new System.Drawing.Size(64, 23);
@@ -116,7 +119,7 @@ namespace WindowsFormsApp1
             // 
             // hexadecimallabel
             // 
-            this.hexadecimallabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.hexadecimallabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hexadecimallabel.Location = new System.Drawing.Point(209, 4);
             this.hexadecimallabel.Name = "hexadecimallabel";
             this.hexadecimallabel.Size = new System.Drawing.Size(64, 23);
@@ -125,7 +128,7 @@ namespace WindowsFormsApp1
             // 
             // decimallabel
             // 
-            this.decimallabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.decimallabel.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.decimallabel.Location = new System.Drawing.Point(14, 4);
             this.decimallabel.Name = "decimallabel";
             this.decimallabel.Size = new System.Drawing.Size(64, 23);
@@ -134,8 +137,9 @@ namespace WindowsFormsApp1
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.toolStripStatusLabel1});
+            this.statusStrip1.Font = new System.Drawing.Font("Consolas", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 527);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(669, 22);
@@ -159,7 +163,7 @@ namespace WindowsFormsApp1
             // 
             // imageRatioLabel
             // 
-            this.imageRatioLabel.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.imageRatioLabel.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.imageRatioLabel.Location = new System.Drawing.Point(511, 5);
             this.imageRatioLabel.Name = "imageRatioLabel";
             this.imageRatioLabel.Size = new System.Drawing.Size(75, 24);
@@ -174,6 +178,8 @@ namespace WindowsFormsApp1
             this.imageRatioText.TabIndex = 5;
             this.imageRatioText.Text = "100";
             this.imageRatioText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.imageRatioText.TextChanged += new System.EventHandler(this.imageRatioText_TextChanged);
+            this.imageRatioText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.imageRatioText_KeyPress);
             // 
             // infoPanel
             // 
@@ -192,48 +198,19 @@ namespace WindowsFormsApp1
             this.infoPanel.Size = new System.Drawing.Size(673, 120);
             this.infoPanel.TabIndex = 14;
             // 
-            // saveBtn
-            // 
-            this.saveBtn.Location = new System.Drawing.Point(374, 17);
-            this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(75, 23);
-            this.saveBtn.TabIndex = 15;
-            this.saveBtn.Text = "Save";
-            this.saveBtn.UseVisualStyleBackColor = true;
-            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
-            // 
-            // testMakePanelBtn
-            // 
-            this.testMakePanelBtn.Location = new System.Drawing.Point(374, 47);
-            this.testMakePanelBtn.Name = "testMakePanelBtn";
-            this.testMakePanelBtn.Size = new System.Drawing.Size(75, 23);
-            this.testMakePanelBtn.TabIndex = 16;
-            this.testMakePanelBtn.Text = "Test";
-            this.testMakePanelBtn.UseVisualStyleBackColor = true;
-            this.testMakePanelBtn.Click += new System.EventHandler(this.testMakePanelBtn_Click);
-            // 
             // itemListBox
             // 
             this.itemListBox.AutoSize = false;
             this.itemListBox.DesignTimeState = null;
-            this.itemListBox.Location = new System.Drawing.Point(542, 13);
+            this.itemListBox.Location = new System.Drawing.Point(542, 30);
             this.itemListBox.Name = "itemListBox";
-            this.itemListBox.Size = new System.Drawing.Size(115, 372);
+            this.itemListBox.Size = new System.Drawing.Size(115, 355);
             this.itemListBox.TabIndex = 17;
-            // 
-            // addButton
-            // 
-            this.addButton.AutoSize = false;
-            this.addButton.DesignTimeState = resources.GetString("addButton.DesignTimeState");
-            this.addButton.Location = new System.Drawing.Point(374, 77);
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(75, 23);
-            this.addButton.TabIndex = 18;
-            this.addButton.Click += new Nevron.Nov.Function<Nevron.Nov.Dom.NEventArgs>(this.addButton_Click);
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.fileToolStripMenuItem});
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(669, 24);
@@ -242,7 +219,11 @@ namespace WindowsFormsApp1
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.saveToolStripMenuItem, this.toolStripMenuItem2, this.toolStripSeparator1, this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.fileToolStripMenuItem.Text = "파일";
@@ -252,6 +233,7 @@ namespace WindowsFormsApp1
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.saveToolStripMenuItem.Text = "저장";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -277,29 +259,86 @@ namespace WindowsFormsApp1
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "저장 파일(*.bin)|*.bin";
             // 
+            // createBtn
+            // 
+            this.createBtn.Location = new System.Drawing.Point(3, 0);
+            this.createBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.createBtn.Name = "createBtn";
+            this.createBtn.Size = new System.Drawing.Size(89, 23);
+            this.createBtn.TabIndex = 20;
+            this.createBtn.Text = "새로 만들기";
+            this.createBtn.UseVisualStyleBackColor = true;
+            this.createBtn.Click += new System.EventHandler(this.createBtn_Click);
+            // 
+            // addBtn
+            // 
+            this.addBtn.Location = new System.Drawing.Point(3, 26);
+            this.addBtn.Name = "addBtn";
+            this.addBtn.Size = new System.Drawing.Size(89, 23);
+            this.addBtn.TabIndex = 21;
+            this.addBtn.Text = "추가";
+            this.addBtn.UseVisualStyleBackColor = true;
+            this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
+            // 
+            // modifyBtn
+            // 
+            this.modifyBtn.Location = new System.Drawing.Point(3, 55);
+            this.modifyBtn.Name = "modifyBtn";
+            this.modifyBtn.Size = new System.Drawing.Size(89, 23);
+            this.modifyBtn.TabIndex = 22;
+            this.modifyBtn.Text = "수정";
+            this.modifyBtn.UseVisualStyleBackColor = true;
+            this.modifyBtn.Click += new System.EventHandler(this.modifyBtn_Click);
+            // 
+            // deleteBtn
+            // 
+            this.deleteBtn.Location = new System.Drawing.Point(3, 84);
+            this.deleteBtn.Name = "deleteBtn";
+            this.deleteBtn.Size = new System.Drawing.Size(89, 23);
+            this.deleteBtn.TabIndex = 23;
+            this.deleteBtn.Text = "삭제";
+            this.deleteBtn.UseVisualStyleBackColor = true;
+            this.deleteBtn.Click += new System.EventHandler(this.deleteBtn_Click);
+            // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
+            // 
+            // btnPanel
+            // 
+            this.btnPanel.Controls.Add(this.createBtn);
+            this.btnPanel.Controls.Add(this.deleteBtn);
+            this.btnPanel.Controls.Add(this.addBtn);
+            this.btnPanel.Controls.Add(this.modifyBtn);
+            this.btnPanel.Location = new System.Drawing.Point(437, 30);
+            this.btnPanel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.btnPanel.Name = "btnPanel";
+            this.btnPanel.Size = new System.Drawing.Size(99, 117);
+            this.btnPanel.TabIndex = 24;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(669, 549);
-            this.Controls.Add(this.addButton);
+            this.Controls.Add(this.btnPanel);
             this.Controls.Add(this.itemListBox);
-            this.Controls.Add(this.testMakePanelBtn);
-            this.Controls.Add(this.saveBtn);
             this.Controls.Add(this.infoPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "MagictoolShape";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.infoPanel.ResumeLayout(false);
             this.infoPanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.btnPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -325,12 +364,15 @@ namespace WindowsFormsApp1
         private ToolStripStatusLabel toolStripStatusLabel1;
         private Button numberCopyBtn;
         private Panel infoPanel;
-        private Button saveBtn;
-        private System.Windows.Forms.Button testMakePanelBtn;
         private Nevron.Nov.WinFormControls.NListBoxControl itemListBox;
-        private Nevron.Nov.WinFormControls.NButtonControl addButton;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button createBtn;
+        private System.Windows.Forms.Button addBtn;
+        private System.Windows.Forms.Button modifyBtn;
+        private System.Windows.Forms.Button deleteBtn;
+        private PrintDialog printDialog1;
+        private Panel btnPanel;
     }
 }
 

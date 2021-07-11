@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms.VisualStyles;
 
 namespace WindowsFormsApp1
 {
@@ -20,12 +22,13 @@ namespace WindowsFormsApp1
             return IsFullPath ? FileName : $@"./{FileName}.bin";
         }
 
-        public void SaveFile(List<Item> items)
+        public void SaveFile(List<Item> items, int imageSizeRatio)
         {
             var fs = File.Open(GetFilePath(), FileMode.Create);
 
             using (var wr = new BinaryWriter(fs))
             {
+                wr.Write(imageSizeRatio);
                 wr.Write(items.Count);
                 foreach (var item in items)
                 {
@@ -36,15 +39,17 @@ namespace WindowsFormsApp1
             }
         }
 
-        public List<LoadedObject> LoadFile()
+        public Tuple<List<LoadedObject>, int> LoadFile()
         {
             var fi = new FileInfo(GetFilePath());
 
             if (fi.Exists)
             {
                 var items = new List<LoadedObject>();
+                int imageSizeRatio = 100;
                 using (var rdr = new BinaryReader(File.Open(GetFilePath(), FileMode.Open)))
                 {
+                    imageSizeRatio = rdr.ReadInt32();
                     var count = rdr.ReadInt32();
 
                     for (var i = 0; i < count; i++)
@@ -56,7 +61,7 @@ namespace WindowsFormsApp1
                     }
                 }
 
-                return items;
+                return new Tuple<List<LoadedObject>, int>(items, imageSizeRatio);
             }
 
             return null;

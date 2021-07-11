@@ -1,19 +1,44 @@
 ﻿using System.Drawing;
+using Nevron.Nov.Graphics;
 using Nevron.Nov.UI;
 
 namespace WindowsFormsApp1
 {
-    class Item
+    public class Item
     {
-        public ulong Value { get; }
-        public NListBoxItem ListBoxItem { get; }
-        public byte[] BitmapBytes { get; }
-        
         public Item(ulong value, NListBoxItem listBoxItem, byte[] bitmapBytes)
         {
             Value = value;
             ListBoxItem = listBoxItem;
             BitmapBytes = bitmapBytes;
+        }
+
+        public ulong Value { get; set; }
+        public NListBoxItem ListBoxItem { get; }
+        public byte[] BitmapBytes { get; private set; }
+
+        public bool Modify(ulong value, Bitmap bitmap)
+        {
+            Value = value;
+
+            var converter = new ImageConverter();
+            BitmapBytes = (byte[]) converter.ConvertTo(bitmap, typeof(byte[]));
+
+            var children = ListBoxItem.GetChildren();
+            
+            NImageSource mImageSource = new NBytesImageSource(BitmapBytes);
+            NImage image = new NImage(mImageSource);
+
+            foreach (var aItem in children.Items)
+            {
+                if (aItem is NImageBox g)
+                {
+                    g.Image = image;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         protected bool Equals(Item other)
@@ -25,7 +50,7 @@ namespace WindowsFormsApp1
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Item) obj);
         }
 
