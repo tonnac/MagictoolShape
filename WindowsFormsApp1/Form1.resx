@@ -118,6 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>162, 17</value>
+  </metadata>
+  <data name="addButton.DesignTimeState" xml:space="preserve">
+    <value>eNrNVctu00AUvZNHH0maJqFCCCREK0rEQ2WDBGKF4jgiUjpYSXDLCiVpoJHSpoKAWnax+wFISKzY9hPYsCobPgEJCXYs2CD4BO6dGT9wkzRuWRBr7LF9zvWdc8+dZADg9bvHB+8/66U3yebi4cfd1OBnAiCCL4r2L7wwnGla0fqO8xjNH0ToUi/TCzaDpzKo3+A3nuI4DGsZz1EcpqHQFDBKU71cBIdpCtph9d5RfHQ0Hn9H8bGQ+PgY/G0vH93BT42P/4lJpbhmf2BSPq4VFXeatDlgMmJFPZx15WOOfBbOZoR8+WC6ieDn6YEpMsRjbcgCkyEFSYXEz4XEpyfDu4LPh8RnhuLZSHx2LH7wY1oWdNX+ijOqfn1V23/LZBPUsCPYXSryBTpBG17CM+jBNqzgXQ/vVuAhNgbdFeAF9PGgtzVowSait6ABLOYU35pism9qhn1V5VkzDUaScXq+Bh3YwBCbikT2Essw63S2F30kSpVT1HUFjk4CfqTAsQD4ug9MCnNi3McVdOApptNXtHiAdsuh6QY7RzRhVyQ9x9HE0cXRhz1F95qrXqYy2DdBql/j2v4SyH7CeZHlKBj1kyb07GMm224Wos++qT1IZ3cIe/6Y+uh4PzoxSsa6ohLQTe/zHqWLwQPevOwRfJpRCTdEvgFrXvPgZwk+q5bXxaMBO/idNhIlKeKQbkSUwpXJ1smhgsGaiOgOcSF90vqith90Yd5XdtoYuOgZpOy6Yie8ktNWM5lxk2GMmwpj3LmTGTd9OuPO+4xL3rBLPj7VlZ8Rn+1hVTrwSnm2gVEMUdyWqILfwxlfROLaBV9EciLPiozaGLGPMVtjo2V90Rb+eXfk/tfuGOSY3LN1ViVOfuQyqSn2cE5btFxumGJRgaxLXoJuq1QQ9oRgxy9dUxGpoIGlL3lwt6OqnoH/3hAuemDyLCfPlES5JDDqaJN2teGEWw6hzaS2WxiVUB3D7ZxSlWHwAsaV/7FbJ9XlD9o6LVI=</value>
+  </data>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>282, 17</value>
+  </metadata>
+  <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
 </root>

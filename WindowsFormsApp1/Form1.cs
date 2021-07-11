@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Nevron.Nov.Graphics;
+using Nevron.Nov.UI;
 
 namespace WindowsFormsApp1
 {
@@ -13,12 +15,8 @@ namespace WindowsFormsApp1
 #else
         readonly ulong MaxValue = ulong.MaxValue;
 #endif
-        private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0) return min;
-            return val.CompareTo(max) > 0 ? max : val;
-        }
-        
+        private readonly string _fileName = "save";
+        private readonly List<Item> _items = new List<Item>();
         private readonly List<List<Box>> _boxes = new List<List<Box>>();
         private ulong _current;
 
@@ -32,6 +30,7 @@ namespace WindowsFormsApp1
                 {
                     textBox2.Text = string.Empty;
                     textBox3.Text = string.Empty;
+                    decimalText.Text = 0.ToString();
                 }
                 else
                 {
@@ -61,21 +60,142 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+            SetLocationAndSize();
+            DisableResize();
+            CreateCells();
+            LoadFile();
+        }
 
+        private void LoadFile_Imple(ItemShapeFileIO itemShapeFileIo)
+        {
+            itemListBox.Items.Clear();
+            _items.Clear();
+            Current = 0;
+            List<ItemShapeFileIO.LoadedObject> loadedObjects = itemShapeFileIo.LoadFile();
+            if (loadedObjects == null) return;
+            foreach (var loadedObject in loadedObjects)
+            {
+                AddNewItem(loadedObject.ImageBytes, loadedObject.Value);
+            }
+        }
+
+        private void LoadFile()
+        {
+            LoadFile_Imple(new ItemShapeFileIO(_fileName));
+        }
+
+        private void LoadFile(string fullPath)
+        {
+            LoadFile_Imple(new ItemShapeFileIO(fullPath, true));
+        }
+
+        private NListBoxItem MakeBoxItem(byte[] imageBytes)
+        {
+            NListBoxItem item;
+            NImageSource mImageSource = new NBytesImageSource(imageBytes);
+            NImage image = new NImage(mImageSource);
+            item = new NListBoxItem(image);
+            NBorder border = new NBorder();
+            border.InnerStroke = new NStroke(1.5, NColor.Black);
+            item.MouseDown += ItemOnMouseDown;
+            item.Border = border;
+
+            return item;
+        }
+
+        private NListBoxItem MakeBoxItem(Bitmap bitmap)
+        {
+            ImageConverter converter = new ImageConverter();
+            var imageBytes = (byte[]) converter.ConvertTo(bitmap, typeof(byte[]));
+
+            NImageSource mImageSource = new NBytesImageSource(imageBytes);
+            NImage image = new NImage(mImageSource);
+            var item = new NListBoxItem(image);
+            NBorder border = new NBorder {InnerStroke = new NStroke(1.5, NColor.Black)};
+            item.MouseDown += ItemOnMouseDown;
+            item.Border = border;
+
+            return item;
+        }
+
+        private void AddNewItem(byte[] imageBytes, ulong value)
+        {
+            NListBoxItem item = MakeBoxItem(imageBytes);
+            AddNewItem(item, value);
+        }
+
+        private void AddNewItem(NListBoxItem boxItem, ulong value)
+        {
+            var a = boxItem.GetChildren();
+            Item newItem = null;
+
+            foreach (var aItem in a.Items)
+            {
+                if (aItem is NImageBox g)
+                {
+                    if (g.Image.ImageSource is NBytesImageSource h)
+                    {
+                        newItem = new Item(value, boxItem, h.Bytes);
+                    }
+                }
+            }
+
+            if (newItem != null)
+            {
+                _items.Add(newItem);
+                itemListBox.Items.Add(boxItem);
+            }
+        }
+
+        private void CopyValue()
+        {
+            if (Current <= 0)
+            {
+                return;
+            }
+            Clipboard.SetText(Current.ToString());
+            toolStripStatusLabel1.Text = $@"클립보드에 {Current} 값이 복사 됐습니다.";
+        }
+
+        private void CopyImage()
+        {
+            Bitmap img = GetCurrentShape(int.TryParse(imageRatioText.Text, out int r) ? r * 0.01f : 1.0f);
+            if (img != null)
+            {
+                Clipboard.SetImage(img);
+                toolStripStatusLabel1.Text = $@"클립보드에 {Current} 이미지가 복사 됐습니다.";
+            }
+        }
+
+        private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+        {
+            if (val.CompareTo(min) < 0) return min;
+            return val.CompareTo(max) > 0 ? max : val;
+        }
+
+        private void SetLocationAndSize()
+        {
 #if DEBUG
+            decimalText.ReadOnly = false;
             infoPanel.Location = new Point(0, 391);
             Size = new Size(686, 588);
+            //itemPanel.Size = new Size(202, 372);
 #else
             infoPanel.Location = new Point(0, 315);
             Size = new Size(686, 498);
 #endif
-            
+        }
 
+        private void DisableResize()
+        {
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterScreen;
+        }
 
+        private void CreateCells()
+        {
             for (int i = 0; i < 8; ++i)
             {
                 var boxList = new List<Box>();
@@ -124,11 +244,11 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void imageCopyBtn_Click(object sender, EventArgs e)
+        Bitmap GetCurrentShape(float imageSizeRatio = 1.0f)
         {
             if (Current <= 0)
             {
-                return;
+                return null;
             }
 
             Bitmap bt = new Bitmap(310, 273);
@@ -139,52 +259,27 @@ namespace WindowsFormsApp1
 
             Clipboard.SetImage(bt);
 
-            float rr = 1.0f;
-            if (int.TryParse(imageRatioText.Text, out int r))
-            {
-                rr = r * 0.01f;
-            }
-
-            Bitmap newImage = new Bitmap((int)(310 * rr * 0.25f), (int)(273 * rr * 0.25f));
+            Bitmap newImage = new Bitmap((int)(310 * imageSizeRatio * 0.25f), (int)(273 * imageSizeRatio * 0.25f));
             g = Graphics.FromImage(newImage);
             g.FillRectangle(Brushes.Black, 0, 0, newImage.Width, newImage.Height);
-            g.DrawImage(bt, 0, 0, (int)(310 * rr * 0.25f), (int)(273 * rr * 0.25f));
+            g.DrawImage(bt, 0, 0, (int)(310 * imageSizeRatio * 0.25f), (int)(273 * imageSizeRatio * 0.25f));
 
-            Clipboard.SetImage(newImage);
-            toolStripStatusLabel1.Text = $"클립보드에 {Current}이미지가 복사 됐습니다.";
+            return newImage;
         }
 
-        private void decimalText_KeyPress(object sender, KeyPressEventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
+            Application.Exit();
         }
 
-        private void decimalText_TextChanged(object sender, EventArgs e)
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (!ulong.TryParse(decimalText.Text, out var value))
-            {
-                value = string.IsNullOrEmpty(decimalText.Text) ? 0 : MaxValue;
-            }
-            else
-            {
-                value = Clamp(value, ulong.MinValue, MaxValue);
-            }
-            decimalText.Text = value.ToString();
-            Current = value;
+            DialogResult dr = openFileDialog1.ShowDialog();
 
-        }
-
-        private void numberCopyBtn_Click(object sender, EventArgs e)
-        {
-            if (Current <= 0)
+            if (dr == DialogResult.OK)
             {
-                return;
+                LoadFile(openFileDialog1.FileName);
             }
-            Clipboard.SetText(Current.ToString());
-            toolStripStatusLabel1.Text = $"클립보드에 {Current}번호가 복사 됐습니다.";
         }
     }
 }
